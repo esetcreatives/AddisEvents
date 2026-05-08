@@ -55,33 +55,37 @@ export default function AdminLoginPage() {
         return
       }
 
-      const res = await fetch('/api/admin/2fa/send', { 
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-      })
-      
-      let result
-      try {
-        result = await res.json()
-      } catch (e) {
-        throw new Error('Server returned an invalid response. Please try again.')
-      }
+      // --- TEMPORARILY DISABLED 2FA ---
+      // const res = await fetch('/api/admin/2fa/send', { 
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({})
+      // })
+      // 
+      // let result
+      // try {
+      //   result = await res.json()
+      // } catch (e) {
+      //   throw new Error('Server returned an invalid response. Please try again.')
+      // }
+      // 
+      // setLoading(false)
+      // 
+      // if (!res.ok) {
+      //   setError(result.error || 'Unable to send verification code.')
+      //   return
+      // }
+      // 
+      // if (result.devCode) {
+      //   sessionStorage.setItem('ae_admin_dev_2fa', result.devCode)
+      // }
+      // 
+      // router.push('/admin/verify-2fa')
 
       setLoading(false)
-
-      if (!res.ok) {
-        setError(result.error || 'Unable to send verification code.')
-        return
-      }
-
-      if (result.devCode) {
-        sessionStorage.setItem('ae_admin_dev_2fa', result.devCode)
-      }
-
-      router.push('/admin/verify-2fa')
+      router.push('/admin')
     } catch (e) {
       setLoading(false)
       const msg = e instanceof Error ? e.message : ''

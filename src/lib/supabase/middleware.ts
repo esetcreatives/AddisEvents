@@ -114,11 +114,11 @@ export async function updateSession(request: NextRequest) {
       return authFailure(request, 403, '/unauthorized', 'Forbidden')
     }
 
-    const isTwoFactorRoute = path.startsWith('/admin/verify-2fa') || path.startsWith('/api/admin/2fa')
-    const verified2fa = request.cookies.get('ae_admin_2fa')?.value === 'verified'
-    if (!isTwoFactorRoute && !verified2fa) {
-      return authFailure(request, 401, '/admin/verify-2fa', 'Two-factor verification required')
-    }
+    // const isTwoFactorRoute = path.startsWith('/admin/verify-2fa') || path.startsWith('/api/admin/2fa')
+    // const verified2fa = request.cookies.get('ae_admin_2fa')?.value === 'verified'
+    // if (!isTwoFactorRoute && !verified2fa) {
+    //   return authFailure(request, 401, '/admin/verify-2fa', 'Two-factor verification required')
+    // }
   }
 
   // Role-based route protection for Organizer
