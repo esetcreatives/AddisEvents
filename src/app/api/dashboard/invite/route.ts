@@ -131,8 +131,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: inviteError.message }, { status: 500 })
     }
 
+    let pin: string | null = null
     if (eventId && newUser.user && (role === 'client' || role === 'staff')) {
-      const pin = role === 'staff' ? randomNumericCode(6) : null
+      pin = role === 'staff' ? randomNumericCode(6) : null
       await adminSupabase.from('event_access').upsert({
         user_id: newUser.user.id,
         event_id: eventId,
