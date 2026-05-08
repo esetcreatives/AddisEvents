@@ -5,7 +5,18 @@ export function createAdminClient() {
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
   if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error('Supabase admin credentials are not configured.')
+    // During build or if env vars are missing, we return a client that will fail gracefully
+    // when called, rather than crashing the build.
+    return createClient(
+      supabaseUrl || 'https://placeholder.supabase.co',
+      serviceRoleKey || 'placeholder',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
   }
 
   return createClient(supabaseUrl, serviceRoleKey, {
