@@ -6,6 +6,9 @@ import { Ticket, Plus, Tag, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { createClient } from '@/lib/supabase/client'
 
 export default function TicketsPage() {
@@ -16,6 +19,10 @@ export default function TicketsPage() {
   const [tiers, setTiers] = useState<any[]>([])
   const [stats, setStats] = useState({ revenue: 0, sold: 0 })
   const [loading, setLoading] = useState(true)
+  
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  const [tierForm, setTierForm] = useState({ name: '', price: '', qty: '' })
+  const [addingTier, setAddingTier] = useState(false)
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -80,17 +87,19 @@ export default function TicketsPage() {
 
   const handleAddTier = async () => {
     if (!selectedEventId) return
-    const name = prompt("Enter ticket tier name (e.g. VIP):")
-    const price = prompt("Enter ticket price:")
-    const qty = prompt("Enter total quantity available:")
+    const { name, price, qty } = tierForm
     if (!name || !price || !qty) return
     
+    setAddingTier(true)
     await supabase.from('tickets').insert({
       event_id: selectedEventId,
       name,
       price: parseInt(price),
       quantity: parseInt(qty)
     })
+    setAddingTier(false)
+    setIsAddOpen(false)
+    setTierForm({ name: '', price: '', qty: '' })
   }
 
   return (
@@ -112,9 +121,51 @@ export default function TicketsPage() {
             </Select>
           )}
           <Button variant="outline"><Tag className="w-4 h-4 mr-2" />Promo Codes</Button>
-          <Button onClick={handleAddTier}><Plus className="w-4 h-4 mr-2" />Add Tier</Button>
+          <Button onClick={() => setIsAddOpen(true)}><Plus className="w-4 h-4 mr-2" />Add Tier</Button>
         </div>
       </div>
+
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Ticket Tier</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Tier Name</Label>
+              <Input 
+                placeholder="e.g. VIP" 
+                value={tierForm.name} 
+                onChange={(e) => setTierForm({ ...tierForm, name: e.target.value })} 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Price (ETB)</Label>
+              <Input 
+                type="number" 
+                placeholder="0" 
+                value={tierForm.price} 
+                onChange={(e) => setTierForm({ ...tierForm, price: e.target.value })} 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Total Quantity</Label>
+              <Input 
+                type="number" 
+                placeholder="100" 
+                value={tierForm.qty} 
+                onChange={(e) => setTierForm({ ...tierForm, qty: e.target.value })} 
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddTier} disabled={addingTier || !tierForm.name || !tierForm.price || !tierForm.qty}>
+              {addingTier ? 'Adding...' : 'Add Tier'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[

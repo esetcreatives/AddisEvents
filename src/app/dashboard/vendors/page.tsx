@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { createClient } from '@/lib/supabase/client'
 
 export default function VendorsPage() {
@@ -14,6 +16,9 @@ export default function VendorsPage() {
   const [vendors, setVendors] = useState<any[]>([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const [isAddOpen, setIsAddOpen] = useState(false)
+  const [vendorName, setVendorName] = useState('')
+  const [addingVendor, setAddingVendor] = useState(false)
 
   useEffect(() => {
     const fetchVendors = async () => {
@@ -46,15 +51,18 @@ export default function VendorsPage() {
   )
 
   const handleAddVendor = async () => {
-    const name = prompt("Enter vendor name:")
-    if (!name) return
+    if (!vendorName.trim()) return
+    setAddingVendor(true)
     const { data: { user } } = await supabase.auth.getUser()
     await supabase.from('vendors').insert({
       organizer_id: user?.id,
-      name,
+      name: vendorName.trim(),
       category: 'other',
       rating: 5
     })
+    setAddingVendor(false)
+    setIsAddOpen(false)
+    setVendorName('')
   }
 
   return (
@@ -64,8 +72,35 @@ export default function VendorsPage() {
           <h1 className="text-2xl font-semibold">Vendors</h1>
           <p className="text-sm text-muted-foreground mt-1">Your vendor directory.</p>
         </div>
-        <Button onClick={handleAddVendor}><Plus className="w-4 h-4 mr-2" />Add Vendor</Button>
+        <Button onClick={() => setIsAddOpen(true)}><Plus className="w-4 h-4 mr-2" />Add Vendor</Button>
       </div>
+
+      <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Vendor</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Vendor Name</Label>
+              <Input 
+                placeholder="e.g. Acme Catering" 
+                value={vendorName} 
+                onChange={(e) => setVendorName(e.target.value)} 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleAddVendor()
+                }}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+            <Button onClick={handleAddVendor} disabled={addingVendor || !vendorName.trim()}>
+              {addingVendor ? 'Adding...' : 'Add Vendor'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

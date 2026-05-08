@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, KeyRound, Save, Trash2, Loader2, History, CheckCircle } from 'lucide-react'
+import { useConfirm } from '@/components/confirm-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -35,6 +36,7 @@ export default function AdminEditUserPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const confirm = useConfirm()
   
   useEffect(() => {
     const fetchOrganizations = async () => {
@@ -108,7 +110,12 @@ export default function AdminEditUserPage() {
   }
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return
+    const ok = await confirm({
+      title: "Delete User",
+      description: "Are you sure you want to delete this user? This action cannot be undone.",
+      variant: "destructive"
+    })
+    if (!ok) return
     
     setDeleting(true)
     setError('')

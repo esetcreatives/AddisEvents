@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Save, Trash2, Loader2, ShieldCheck, ShieldAlert, KeyRound } from 'lucide-react'
+import { useConfirm } from '@/components/confirm-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -30,6 +31,7 @@ export default function EditAdminPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null)
+  const confirm = useConfirm()
 
   useEffect(() => {
     const fetchAdmin = async () => {
@@ -102,7 +104,12 @@ export default function EditAdminPage() {
   }
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to remove this administrator? They will lose all HQ access.')) return
+    const ok = await confirm({
+      title: "Remove Administrator",
+      description: "Are you sure you want to remove this administrator? They will lose all HQ access.",
+      variant: "destructive"
+    })
+    if (!ok) return
     
     setDeleting(true)
     setError('')

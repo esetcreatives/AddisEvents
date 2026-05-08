@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Bell, Lock, Settings2, UserPlus, Loader2, Save, Trash2, RotateCcw } from 'lucide-react'
+import { useConfirm } from '@/components/confirm-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -18,6 +19,7 @@ export default function AdminSettingsPage() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [resetting, setResetting] = useState(false)
+  const confirm = useConfirm()
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -61,7 +63,12 @@ export default function AdminSettingsPage() {
   }
 
   const handleReset = async () => {
-    if (!confirm('CRITICAL WARNING: This will delete ALL events, organizations, and guests. This cannot be undone. Proceed?')) return
+    const ok = await confirm({
+      title: "Wipe Platform Data",
+      description: "CRITICAL WARNING: This will delete ALL events, organizations, and guests. This cannot be undone. Proceed?",
+      variant: "destructive"
+    })
+    if (!ok) return
     
     setResetting(true)
     setMessage('')

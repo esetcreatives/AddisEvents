@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { Edit3, Plus, Search, ShieldCheck, Users, Loader2, ShieldAlert } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -31,6 +32,7 @@ function AdminsList() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    const supabase = createClient()
     const fetchAdmins = async () => {
       setLoading(true)
       try {
@@ -48,6 +50,14 @@ function AdminsList() {
       }
     }
     fetchAdmins()
+
+    const channel = supabase.channel('admin-admins-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
+        fetchAdmins()
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   const filtered = useMemo(() => {

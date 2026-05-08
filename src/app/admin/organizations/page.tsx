@@ -36,6 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { createClient } from '@/lib/supabase/client'
 
 type Organization = {
   id: string
@@ -90,7 +91,16 @@ export default function AdminOrganizationsPage() {
   }
 
   useEffect(() => {
+    const supabase = createClient()
     fetchOrganizations()
+
+    const channel = supabase.channel('admin-orgs-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'organizations' }, () => {
+        fetchOrganizations()
+      })
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
   }, [])
 
   const filtered = useMemo(() => {

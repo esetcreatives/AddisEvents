@@ -18,13 +18,21 @@ function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   )
 }
 
-function SelectValue({ className, ...props }: SelectPrimitive.Value.Props) {
+function SelectValue({ className, children, ...props }: SelectPrimitive.Value.Props) {
   return (
     <SelectPrimitive.Value
       data-slot="select-value"
       className={cn("flex flex-1 text-left", className)}
       {...props}
-    />
+    >
+      {children || ((value: any) => {
+        if (value === null || value === undefined || value === "") return props.placeholder;
+        if (typeof value === 'string') {
+          return value.split(/[-_]/).map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+        return String(value);
+      })}
+    </SelectPrimitive.Value>
   )
 }
 
