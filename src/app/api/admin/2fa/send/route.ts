@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       .single()
 
     const isAdmin = dbUser?.role === 'super_admin' || dbUser?.role === 'manager' || 
+                    user.app_metadata?.role === 'super_admin' || user.app_metadata?.role === 'manager' ||
                     user.user_metadata?.role === 'super_admin' || user.user_metadata?.role === 'manager'
 
     if (!isAdmin || dbUser?.status === 'suspended') {

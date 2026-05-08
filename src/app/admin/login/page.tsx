@@ -21,48 +21,61 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { data, error: authError } = await supabase.auth.signInWithPassword(form)
+    try {
+      const supabase = createClient()
+      const { data, error: authError } = await supabase.auth.signInWithPassword(form)
 
-    if (authError || !data.user) {
+      if (authError || !data.user) {
+        setLoading(false)
+        setError(authError?.message || 'Unable to sign in.')
+        return
+      }
+
+      const { data: profile } = await supabase.from('users').select('role, status').eq('id', data.user.id).single()
+
+      const isAdmin = profile?.role === 'super_admin' || profile?.role === 'manager' || 
+                      data.user.app_metadata?.role === 'super_admin' || data.user.app_metadata?.role === 'manager' ||
+                      data.user.user_metadata?.role === 'super_admin' || data.user.user_metadata?.role === 'manager'
+
+      if (!isAdmin) {
+        await supabase.auth.signOut()
+        setLoading(false)
+        setError('This portal is only for authorized HQ staff.')
+        return
+      }
+
+      if (profile?.status === 'suspended') {
+        await supabase.auth.signOut()
+        setLoading(false)
+        setError('This account is suspended. Contact platform support.')
+        return
+      }
+
+      const res = await fetch('/api/admin/2fa/send', { method: 'POST' })
+      
+      let result
+      try {
+        result = await res.json()
+      } catch (e) {
+        throw new Error('Server returned an invalid response. Please try again.')
+      }
+
       setLoading(false)
-      setError(authError?.message || 'Unable to sign in.')
-      return
-    }
 
-    const { data: profile } = await supabase.from('users').select('role, status').eq('id', data.user.id).single()
+      if (!res.ok) {
+        setError(result.error || 'Unable to send verification code.')
+        return
+      }
 
-    const isAdmin = profile?.role === 'super_admin' || profile?.role === 'manager' || 
-                    data.user.user_metadata?.role === 'super_admin' || data.user.user_metadata?.role === 'manager'
+      if (result.devCode) {
+        sessionStorage.setItem('ae_admin_dev_2fa', result.devCode)
+      }
 
-    if (!isAdmin) {
-      await supabase.auth.signOut()
+      router.push('/admin/verify-2fa')
+    } catch (e) {
       setLoading(false)
-      setError('This portal is only for authorized HQ staff.')
-      return
+      setError(e instanceof Error ? e.message : 'A network error occurred. Please check your connection.')
     }
-
-    if (profile?.status === 'suspended') {
-      await supabase.auth.signOut()
-      setLoading(false)
-      setError('This account is suspended. Contact platform support.')
-      return
-    }
-
-    const res = await fetch('/api/admin/2fa/send', { method: 'POST' })
-    const result = await res.json()
-    setLoading(false)
-
-    if (!res.ok) {
-      setError(result.error || 'Unable to send verification code.')
-      return
-    }
-
-    if (result.devCode) {
-      sessionStorage.setItem('ae_admin_dev_2fa', result.devCode)
-    }
-
-    router.push('/admin/verify-2fa')
   }
 
   return (
