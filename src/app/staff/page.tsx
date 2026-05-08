@@ -216,16 +216,17 @@ export default function StaffPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] relative overflow-hidden">
-      {/* Background accents */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div className="pointer-events-none absolute inset-0 dot-pattern opacity-35" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[linear-gradient(180deg,rgba(145,9,30,0.08),rgba(90,122,107,0.045)_42%,transparent)]" />
 
       <header className="border-b border-border/60 sticky top-0 bg-white/80 backdrop-blur-md z-10">
         <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/staff" className="font-heading font-bold text-primary flex items-center gap-2 group">
-            <span className="text-xl tracking-tighter">ADDIS</span>
-            <span className="text-foreground/40 font-medium text-sm tracking-widest uppercase">Staff</span>
+          <Link href="/staff" className="font-heading text-xl font-semibold tracking-tight flex items-center gap-2">
+            <div>
+              Addis<span className="text-primary">Events</span>
+              <span className="ml-2 text-xs font-normal text-muted-foreground uppercase tracking-widest bg-muted px-2 py-1 rounded">Staff</span>
+            </div>
             {!isOnline && (
               <span className="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-sans uppercase tracking-[0.2em] font-bold">
                 Offline

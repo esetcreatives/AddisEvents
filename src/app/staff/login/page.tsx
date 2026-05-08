@@ -72,10 +72,9 @@ export default function StaffLoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAF9] relative overflow-hidden flex items-center justify-center px-4 py-10">
-      {/* Background accents */}
-      <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-[100px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-primary/5 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />
+    <main className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background px-4 py-10">
+      <div className="pointer-events-none absolute inset-0 dot-pattern opacity-35" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[linear-gradient(180deg,rgba(145,9,30,0.1),rgba(90,122,107,0.045)_48%,transparent)]" />
 
       <div className="relative z-10 w-full max-w-md space-y-6">
         <Link
