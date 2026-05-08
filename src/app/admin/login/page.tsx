@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         return
       }
 
-      const { data: profile } = await supabase.from('users').select('role, status').eq('id', data.user.id).single()
+      const { data: profile } = await supabase.from('users').select('role, status, must_change_password').eq('id', data.user.id).single()
 
       const isAdmin = profile?.role === 'super_admin' || profile?.role === 'manager' || 
                       data.user.app_metadata?.role === 'super_admin' || data.user.app_metadata?.role === 'manager' ||
