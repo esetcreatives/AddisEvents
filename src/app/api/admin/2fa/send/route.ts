@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      devCode: shouldSendEmail ? undefined : code,
+      devCode: process.env.NODE_ENV !== 'production' ? code : undefined,
     })
   } catch (error) {
     return NextResponse.json(
