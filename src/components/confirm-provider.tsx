@@ -51,7 +51,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
           <DialogHeader>
             <DialogTitle>{options.title || "Are you sure?"}</DialogTitle>
             {options.description && (
-              <DialogDescription>{options.description}</DialogDescription>
+              <DialogDescription className="whitespace-pre-wrap">{options.description}</DialogDescription>
             )}
           </DialogHeader>
           <DialogFooter>

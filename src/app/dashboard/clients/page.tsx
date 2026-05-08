@@ -85,9 +85,22 @@ export default function ClientsPage() {
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to invite')
 
+      let description = `Account created for ${email}.`
+      
+      if (result.tempPassword) {
+        description += `\n\nTemporary Password: ${result.tempPassword}`
+      }
+      if (result.pin) {
+        description += `\nStaff PIN: ${result.pin}`
+      }
+      
+      if (result.tempPassword || result.pin) {
+        description += `\n\nPlease copy these credentials and share them securely with the user.`
+      }
+
       await confirm({
         title: "Success",
-        description: `Invitation sent to ${email}`,
+        description: description,
         confirmText: "OK",
         cancelText: ""
       })
