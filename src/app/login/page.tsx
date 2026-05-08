@@ -73,7 +73,7 @@ function LoginPageContent() {
           return
         }
 
-        if (profile?.must_change_password) {
+        if (profile?.must_change_password || data.user.user_metadata?.must_change_password) {
           router.push('/change-password')
         } else if (role === 'client') {
           router.push('/portal')
