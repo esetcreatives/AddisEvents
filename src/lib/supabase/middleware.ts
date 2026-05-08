@@ -7,6 +7,11 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
+  // Allow OPTIONS requests for CORS preflight
+  if (request.method === 'OPTIONS') {
+    return withSecurityHeaders(supabaseResponse)
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
