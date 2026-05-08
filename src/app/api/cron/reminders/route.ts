@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { sendRSVPConfirmation } from '@/lib/resend';
 import { createAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 type PendingGuest = {
   email?: string | null
   full_name?: string | null

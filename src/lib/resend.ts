@@ -1,7 +1,18 @@
 import { Resend } from 'resend';
 import { escapeHtml } from '@/lib/security';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resendInstance: Resend | null = null;
+
+const getResend = () => {
+  if (!resendInstance) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY is not defined');
+    }
+    resendInstance = new Resend(apiKey);
+  }
+  return resendInstance;
+};
 
 export const sendRSVPConfirmation = async (email: string, guestName: string, eventTitle: string, qrCode: string) => {
   try {
@@ -9,6 +20,7 @@ export const sendRSVPConfirmation = async (email: string, guestName: string, eve
       return { success: false, error: 'Resend is not configured.' };
     }
 
+    const resend = getResend();
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM_EMAIL || 'Addis Events <confirm@addisevents.et>',
       to: [email],
