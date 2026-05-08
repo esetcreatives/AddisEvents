@@ -102,8 +102,8 @@ export async function updateSession(request: NextRequest) {
       .eq('id', user.id)
       .single()
     
-    const isSuperAdmin = dbUser?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
-    const isManager = dbUser?.role === 'manager' || user.user_metadata?.role === 'manager'
+    const isSuperAdmin = dbUser?.role === 'super_admin' || user.app_metadata?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
+    const isManager = dbUser?.role === 'manager' || user.app_metadata?.role === 'manager' || user.user_metadata?.role === 'manager'
 
     if (!isSuperAdmin && !isManager) {
       return authFailure(request, 403, '/unauthorized', 'Forbidden')

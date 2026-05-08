@@ -14,7 +14,7 @@ export async function requireHQAccess() {
 
   const admin = createAdminClient()
   const { data: currentUser } = await admin.from('users').select('role').eq('id', user.id).single()
-  const role = currentUser?.role || user.user_metadata?.role
+  const role = currentUser?.role || user.app_metadata?.role || user.user_metadata?.role
 
   const hasAccess = role === 'super_admin' || role === 'manager'
   if (!hasAccess) return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) }

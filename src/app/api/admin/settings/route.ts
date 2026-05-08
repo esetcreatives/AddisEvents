@@ -10,7 +10,7 @@ async function requireSuperAdmin() {
 
   const admin = createAdminClient()
   const { data: currentUser } = await admin.from('users').select('role').eq('id', user.id).single()
-  const isSuperAdmin = currentUser?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
+  const isSuperAdmin = currentUser?.role === 'super_admin' || user.app_metadata?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
 
   if (!isSuperAdmin) return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) }
 

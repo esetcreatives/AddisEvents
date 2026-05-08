@@ -121,6 +121,9 @@ export async function POST(request: Request) {
         full_name: cleanFullName,
         role: role,
         organization_id: organizationId
+      },
+      app_metadata: {
+        role: role
       }
     })
 

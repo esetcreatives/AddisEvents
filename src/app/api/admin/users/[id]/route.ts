@@ -10,7 +10,7 @@ async function requireSuperAdmin() {
 
   const admin = createAdminClient()
   const { data: currentUser } = await admin.from('users').select('role').eq('id', user.id).single()
-  const isSuperAdmin = currentUser?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
+  const isSuperAdmin = currentUser?.role === 'super_admin' || user.app_metadata?.role === 'super_admin' || user.user_metadata?.role === 'super_admin'
 
   if (!isSuperAdmin) return { error: NextResponse.json({ error: 'Forbidden' }, { status: 403 }) }
 
@@ -93,6 +93,7 @@ export async function PATCH(
   if (updates.role) {
     await auth.admin.auth.admin.updateUserById(id, {
       user_metadata: { role: updates.role },
+      app_metadata: { role: updates.role },
     })
   }
 

@@ -81,6 +81,9 @@ export async function POST(request: Request) {
         organization_id: organizationId || null,
         must_change_password: true,
       },
+      app_metadata: {
+        role,
+      },
     })
 
     if (authError) {

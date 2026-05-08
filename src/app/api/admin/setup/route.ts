@@ -169,10 +169,14 @@ export async function POST(request: Request) {
     }
 
     // Metadata already set correctly in createUser, but we ensure it here
+    // We set role in both user_metadata (for legacy/UI) and app_metadata (for secure RLS)
     await admin.auth.admin.updateUserById(data.user.id, {
       user_metadata: {
         ...data.user.user_metadata,
         full_name: fullName,
+        role: 'super_admin',
+      },
+      app_metadata: {
         role: 'super_admin',
       },
     })
