@@ -36,7 +36,7 @@ export default function StaffLoginPage() {
     // Verify this is a staff account
     const { data: profile } = await supabase
       .from('users')
-      .select('role, status')
+      .select('role, status, must_change_password')
       .eq('id', data.user.id)
       .single()
 
@@ -64,7 +64,11 @@ export default function StaffLoginPage() {
       return
     }
 
-    router.push('/staff')
+    if (profile?.must_change_password || data.user.user_metadata?.must_change_password) {
+      router.push('/change-password')
+    } else {
+      router.push('/staff')
+    }
   }
 
   return (
