@@ -151,7 +151,8 @@ export async function POST(request: Request) {
         .select('token')
         .single()
 
-      const shouldSendEmail = Boolean(process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 'your_resend_api_key')
+      // Force disable email sending as requested by user
+      const shouldSendEmail = false
       if (shouldSendEmail) {
         const resend = new Resend(process.env.RESEND_API_KEY)
         const inviteUrl = role === 'client' && tokenRow?.token
