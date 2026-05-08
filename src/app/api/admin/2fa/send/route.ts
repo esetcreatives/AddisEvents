@@ -17,11 +17,20 @@ export async function POST(request: Request) {
     const originError = enforceSameOrigin(request)
     if (originError) return originError
 
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-    if (!user?.email) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json({ 
+        error: 'Database configuration missing. Ensure SUPABASE_SERVICE_ROLE_KEY is set in production.' 
+      }, { status: 500 })
+    }
+
+    const supabase = await createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+    if (userError || !user?.email) {
+      return NextResponse.json({ error: 'Unauthorized: Session invalid or expired.' }, { status: 401 })
     }
 
     const admin = createAdminClient()

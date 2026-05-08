@@ -51,7 +51,13 @@ export default function AdminLoginPage() {
         return
       }
 
-      const res = await fetch('/api/admin/2fa/send', { method: 'POST' })
+      const res = await fetch('/api/admin/2fa/send', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
       
       let result
       try {
