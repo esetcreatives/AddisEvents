@@ -102,8 +102,10 @@ export async function POST(request: Request) {
 
     if (shouldSendEmail) {
       const resend = new Resend(process.env.RESEND_API_KEY)
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+      
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || 'Addis Events <noreply@addisevents.com>',
+        from: fromEmail,
         to: [user.email],
         subject: 'Your Addis Events admin verification code',
         html: `<p>Your Addis Events admin code is <strong style="font-size:24px;letter-spacing:4px">${escapeHtml(code)}</strong>. It expires in 10 minutes.</p>`,
