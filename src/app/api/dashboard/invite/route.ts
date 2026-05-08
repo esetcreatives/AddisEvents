@@ -120,7 +120,8 @@ export async function POST(request: Request) {
       user_metadata: {
         full_name: cleanFullName,
         role: role,
-        organization_id: organizationId
+        organization_id: organizationId,
+        must_change_password: true
       },
       app_metadata: {
         role: role

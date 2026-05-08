@@ -28,7 +28,7 @@ export default function PortalLoginPage() {
       return
     }
 
-    const { data: profile } = await supabase.from('users').select('role, status').eq('id', data.user.id).single()
+    const { data: profile } = await supabase.from('users').select('role, status, must_change_password').eq('id', data.user.id).single()
     const role = profile?.role || data.user.user_metadata?.role
 
     if (role !== 'client') {
@@ -44,9 +44,11 @@ export default function PortalLoginPage() {
       return
     }
 
-    // Removed strict event access check to allow clients to log in 
-    // and see the portal even before their first event is assigned.
-    router.push('/portal')
+    if (profile?.must_change_password || data.user.user_metadata?.must_change_password) {
+      router.push('/change-password')
+    } else {
+      router.push('/portal')
+    }
   }
 
   return (

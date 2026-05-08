@@ -85,7 +85,11 @@ export default function AdminLoginPage() {
       // router.push('/admin/verify-2fa')
 
       setLoading(false)
-      router.push('/admin')
+      if (profile?.must_change_password || data.user.user_metadata?.must_change_password) {
+        router.push('/change-password')
+      } else {
+        router.push('/admin')
+      }
     } catch (e) {
       setLoading(false)
       const msg = e instanceof Error ? e.message : ''

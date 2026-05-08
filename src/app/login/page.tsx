@@ -74,7 +74,7 @@ function LoginPageContent() {
         }
 
         if (profile?.must_change_password) {
-          router.push('/reset-password')
+          router.push('/change-password')
         } else if (role === 'client') {
           router.push('/portal')
         } else if (role === 'staff') {
