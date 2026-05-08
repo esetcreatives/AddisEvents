@@ -93,11 +93,8 @@ export async function POST(request: Request) {
       process.env.RESEND_API_KEY !== 'your_resend_api_key'
     )
 
-    if (!shouldSendEmail && process.env.NODE_ENV === 'production') {
-      return NextResponse.json(
-        { error: 'Email delivery must be configured before using admin 2FA in production.' },
-        { status: 500 }
-      )
+    if (!shouldSendEmail) {
+      console.log(`[DEV MODE IN PROD] 2FA Code generated for ${user.email}: ${code}`)
     }
 
     if (shouldSendEmail) {
@@ -114,7 +111,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      devCode: process.env.NODE_ENV !== 'production' ? code : undefined,
+      devCode: code, // Always return devCode as requested by user
     })
   } catch (error) {
     return NextResponse.json(

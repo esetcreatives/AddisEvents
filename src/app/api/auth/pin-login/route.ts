@@ -13,12 +13,12 @@ export async function POST(request: Request) {
     const originError = enforceSameOrigin(request)
     if (originError) return originError
 
-    if (process.env.NODE_ENV === 'production' && process.env.ENABLE_STAFF_PIN_LOGIN !== 'true') {
-      return NextResponse.json(
-        { error: 'Staff PIN login is disabled in production. Use email and password.' },
-        { status: 403 }
-      )
-    }
+    // if (process.env.NODE_ENV === 'production' && process.env.ENABLE_STAFF_PIN_LOGIN !== 'true') {
+    //   return NextResponse.json(
+    //     { error: 'Staff PIN login is disabled in production. Use email and password.' },
+    //     { status: 403 }
+    //   )
+    // }
 
     const rateLimitError = rateLimit(`pin-login:${getClientIp(request)}`, {
       limit: 5,

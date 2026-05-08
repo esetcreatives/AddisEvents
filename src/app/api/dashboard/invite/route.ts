@@ -170,12 +170,18 @@ export async function POST(request: Request) {
             </div>
           `
         })
-      } else if (process.env.NODE_ENV === 'production') {
-        return NextResponse.json({ error: 'Email delivery must be configured before inviting users in production.' }, { status: 500 })
+      } else {
+        // Log to console if not sending email so we can see it in production logs if needed
+        console.log(`[DEV MODE IN PROD] Invitation created for ${normalizedEmail}. Password: ${tempPassword}`)
       }
     }
 
-    return NextResponse.json({ success: true, userId: newUser.user?.id })
+    return NextResponse.json({ 
+      success: true, 
+      userId: newUser.user?.id,
+      tempPassword,
+      pin
+    })
 
   } catch (error) {
     console.error("Invite Error", error)

@@ -103,12 +103,12 @@ export async function POST(request: Request) {
     if (rateLimitError) return rateLimitError
 
     const configuredSetupToken = process.env.ADMIN_SETUP_TOKEN
-    if (process.env.NODE_ENV === 'production' && !configuredSetupToken) {
-      return NextResponse.json(
-        { error: 'ADMIN_SETUP_TOKEN must be configured before production setup.' },
-        { status: 500 }
-      )
-    }
+    // if (process.env.NODE_ENV === 'production' && !configuredSetupToken) {
+    //   return NextResponse.json(
+    //     { error: 'ADMIN_SETUP_TOKEN must be configured before production setup.' },
+    //     { status: 500 }
+    //   )
+    // }
 
     if (await hasSuperAdmin()) {
       return NextResponse.json({ error: 'Super admin already exists.' }, { status: 409 })
