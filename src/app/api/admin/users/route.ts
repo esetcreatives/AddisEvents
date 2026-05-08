@@ -113,8 +113,8 @@ export async function POST(request: Request) {
     }
 
     // 3. Send welcome email with temporary password
-    const resendApiKey = process.env.RESEND_API_KEY
-    const hasResend = resendApiKey && resendApiKey !== 'your_resend_api_key'
+    // Force disable email sending as requested by user
+    const hasResend = false
     
     if (hasResend) {
       try {

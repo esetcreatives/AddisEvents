@@ -62,7 +62,7 @@ export default function AdminVerify2FAPage() {
           {resent && <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700">A new code was sent.</div>}
           {devCode && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-              Email is not configured locally. Use dev code <span className="font-mono font-semibold tracking-widest">{devCode}</span>.
+              Email delivery is bypassed. Use verification code <span className="font-mono font-semibold tracking-widest">{devCode}</span>.
             </div>
           )}
           <div className="space-y-2">
