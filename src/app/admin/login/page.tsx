@@ -27,7 +27,11 @@ export default function AdminLoginPage() {
 
       if (authError || !data.user) {
         setLoading(false)
-        setError(authError?.message || 'Unable to sign in.')
+        if (authError?.message === 'Failed to fetch') {
+          setError('Network error connecting to the database. If this is a deployed site, please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables are set correctly in your hosting dashboard.')
+        } else {
+          setError(authError?.message || 'Unable to sign in.')
+        }
         return
       }
 
@@ -80,7 +84,12 @@ export default function AdminLoginPage() {
       router.push('/admin/verify-2fa')
     } catch (e) {
       setLoading(false)
-      setError(e instanceof Error ? e.message : 'A network error occurred. Please check your connection.')
+      const msg = e instanceof Error ? e.message : ''
+      if (msg === 'Failed to fetch') {
+        setError('Network error. If this is a deployed site, please ensure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables are set correctly.')
+      } else {
+        setError(msg || 'A network error occurred. Please check your connection.')
+      }
     }
   }
 
