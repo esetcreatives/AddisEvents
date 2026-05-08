@@ -1,0 +1,15 @@
+{
+  "Common": {
+    "title": "Addis Events",
+    "dashboard": "Dashboard",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Log Out"
+  },
+  "Landing": {
+    "hero": {
+      "title": "Seamless Event Management for Addis",
+      "subtitle": "From high-end weddings to corporate galas, we handle the logistics so you can focus on the moment."
+    }
+  }
+}
